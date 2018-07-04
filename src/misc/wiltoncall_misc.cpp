@@ -28,6 +28,15 @@
 
 #include "wilton/wilton.h"
 
+#ifdef _WIN32
+//#include "windows.h"
+#include "psapi.h"
+#include <processthreadsapi.h>
+#elif defined(__linux__) || defined (__ANDROID_API__)
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 namespace wilton {
 namespace misc {
 
@@ -39,6 +48,31 @@ support::buffer stdin_readline(sl::io::span<const char>) {
     std::string res;
     std::getline(std::cin,res);
     return support::make_string_buffer(res);
+}
+
+support::buffer service_get_pid(sl::io::span<const char>) {
+    uint64_t pid;
+#ifdef _WIN32
+    pid = GetCurrentProcessId();
+#elif defined(__linux__) || defined (__ANDROID_API__)
+     pid = getpid();
+#elif TARGET_OS_X
+
+#endif
+    return support::make_string_buffer(sl::support::to_string(pid));
+}
+
+support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) {
+#ifdef _WIN32
+    uint64_t vm_process_usage;
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+    vm_process_usage = pmc.PrivateUsage; // in bytes
+    return support::make_string_buffer(sl::support::to_string(vm_process_usage));
+#elif defined(__linux__) || defined (__ANDROID_API__)
+#elif TARGET_OS_X
+#endif
+    return support::make_null_buffer();
 }
 
 } // namespace

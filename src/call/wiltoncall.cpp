@@ -140,6 +140,8 @@ char* wiltoncall_init(const char* config_json, int config_json_len) {
         // misc
         wilton::support::register_wiltoncall("get_wiltoncall_config", wilton::misc::get_wiltoncall_config);
         wilton::support::register_wiltoncall("stdin_readline", wilton::misc::stdin_readline);
+        wilton::support::register_wiltoncall("service_get_pid", wilton::misc::service_get_pid);
+        wilton::support::register_wiltoncall("service_get_process_memory_size_bytes", wilton::misc::service_get_process_memory_size_bytes);
 
         return nullptr;
     } catch (const std::exception& e) {
