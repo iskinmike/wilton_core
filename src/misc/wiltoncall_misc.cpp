@@ -29,9 +29,8 @@
 #include "wilton/wilton.h"
 
 #ifdef _WIN32
-//#include "windows.h"
-#include "psapi.h"
-#include <processthreadsapi.h>
+#include <windows.h>
+#include <psapi.h>
 #elif defined(__linux__) || defined (__ANDROID_API__)
 #include <sys/types.h>
 #include <unistd.h>
@@ -55,7 +54,7 @@ support::buffer service_get_pid(sl::io::span<const char>) {
 #ifdef _WIN32
     pid = GetCurrentProcessId();
 #elif defined(__linux__) || defined (__ANDROID_API__)
-     pid = getpid();
+    pid = getpid();
 #elif TARGET_OS_X
 
 #endif
@@ -63,11 +62,16 @@ support::buffer service_get_pid(sl::io::span<const char>) {
 }
 
 support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) {
+
 #ifdef _WIN32
     uint64_t vm_process_usage;
-    PROCESS_MEMORY_COUNTERS_EX pmc;
+    PROCESS_MEMORY_COUNTERS pmc;
+    // THere may be different PSAPI_VERSION, but it always use GetProcessMemoryInfo function name
     GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
-    vm_process_usage = pmc.PrivateUsage; // in bytes
+    // https://docs.microsoft.com/en-us/windows/desktop/api/psapi/ns-psapi-_process_memory_counters
+    // PagefileUsage - The Commit Charge value in bytes for this process. 
+    //                 Commit Charge is the total amount of memory that the memory manager has committed for a running process.
+    vm_process_usage = pmc.PagefileUsage;
     return support::make_string_buffer(sl::support::to_string(vm_process_usage));
 #elif defined(__linux__) || defined (__ANDROID_API__)
 #elif TARGET_OS_X
