@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, alex at staticlibs.net
+ * Copyright 2018, mike at myasnikov.mike@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/* 
- * File:   wilton_logger.cpp
- * Author: alex
- * 
- * Created on June 2, 2016, 4:27 PM
  */
 
 #include "wilton_service.hpp"

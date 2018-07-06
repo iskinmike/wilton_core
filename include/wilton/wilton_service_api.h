@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-/* 
- * File:   wilton_service_api.h
- * Author: alex
- *
- * Created on Junly 6, 2018, 1:23 PM
- */
-
 #ifndef WILTON_SERVICE_API_H
 #define WILTON_SERVICE_API_H
 
