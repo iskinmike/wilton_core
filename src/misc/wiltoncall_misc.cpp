@@ -51,30 +51,25 @@ support::buffer stdin_readline(sl::io::span<const char>) {
 }
 
 support::buffer service_get_pid(sl::io::span<const char>) {
-    uint64_t pid;
+    int64_t pid; // beacause getpid is int32_t, but GetCurrentProcessId returns DWORD which uint32_t
 #ifdef _WIN32
     pid = GetCurrentProcessId();
 #elif defined(__linux__) || defined (__ANDROID_API__)
-    pid = getpid();
+    pid = ::getpid();
 #elif TARGET_OS_X
-
 #endif
-
     return support::make_string_buffer(sl::support::to_string(pid));
 }
 
 support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) {
-
 #ifdef _WIN32
-    uint64_t vm_process_usage;
     PROCESS_MEMORY_COUNTERS pmc;
     // THere may be different PSAPI_VERSION, but it always use GetProcessMemoryInfo function name
     GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
     // https://docs.microsoft.com/en-us/windows/desktop/api/psapi/ns-psapi-_process_memory_counters
     // PagefileUsage - The Commit Charge value in bytes for this process. 
     //                 Commit Charge is the total amount of memory that the memory manager has committed for a running process.
-    vm_process_usage = pmc.PagefileUsage;
-    return support::make_string_buffer(sl::support::to_string(vm_process_usage));
+    return support::make_string_buffer(sl::support::to_string(pmc.PagefileUsage));
 #elif defined(__linux__) || defined (__ANDROID_API__)
 #elif TARGET_OS_X
 #endif
