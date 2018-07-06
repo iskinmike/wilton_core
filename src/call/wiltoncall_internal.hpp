@@ -60,7 +60,7 @@ support::buffer get_wiltoncall_config(sl::io::span<const char> data);
 support::buffer stdin_readline(sl::io::span<const char> data);
 support::buffer service_get_pid(sl::io::span<const char> data);
 support::buffer service_get_process_memory_size_bytes(sl::io::span<const char> data);
-
+support::buffer service_get_thread_count(sl::io::span<const char> data);
 } // namespace
 
 

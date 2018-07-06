@@ -68,6 +68,8 @@ list ( APPEND ${PROJECT_NAME}_SRC ${${PROJECT_NAME}_SRC_DYLOAD} )
 
 # misc
 set ( ${PROJECT_NAME}_SRC_MISC
+        ${CMAKE_CURRENT_LIST_DIR}/src/misc/wilton_service_api.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/misc/wilton_service.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/misc/wilton_misc.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/misc/wiltoncall_misc.cpp )
 list ( APPEND ${PROJECT_NAME}_SRC ${${PROJECT_NAME}_SRC_MISC} )

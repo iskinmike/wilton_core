@@ -27,6 +27,7 @@
 #include "call/wiltoncall_internal.hpp"
 
 #include "wilton/wilton.h"
+#include "wilton/wilton_service_api.h"
 
 #ifdef _WIN32
 //#include "windows.h"
@@ -55,10 +56,11 @@ support::buffer service_get_pid(sl::io::span<const char>) {
 #ifdef _WIN32
     pid = GetCurrentProcessId();
 #elif defined(__linux__) || defined (__ANDROID_API__)
-     pid = getpid();
+    pid = getpid();
 #elif TARGET_OS_X
 
 #endif
+
     return support::make_string_buffer(sl::support::to_string(pid));
 }
 
@@ -73,6 +75,12 @@ support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) 
 #elif TARGET_OS_X
 #endif
     return support::make_null_buffer();
+}
+
+support::buffer service_get_thread_count(sl::io::span<const char> ) {
+    int count = 0;
+    wilton_service_get_thread_count(&count);
+    return support::make_string_buffer(sl::support::to_string(count));
 }
 
 } // namespace
