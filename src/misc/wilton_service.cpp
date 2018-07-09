@@ -31,10 +31,10 @@ private:
    
 public:
 	static void increase_thread_count() {
-        ++thread_count;
+        thread_count.fetch_add(1, std::memory_order_acq_rel);
 	}
     static void decrease_thread_count() {
-        --thread_count;
+        thread_count.fetch_sub(1, std::memory_order_acq_rel);
     }
     static int get_thread_count() {
         return thread_count;

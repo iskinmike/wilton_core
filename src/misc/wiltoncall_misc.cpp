@@ -28,11 +28,12 @@
 
 #include "wilton/wilton.h"
 #include "wilton/wilton_service_api.h"
+#include "staticlib/config/os.hpp"
 
-#ifdef _WIN32
+#ifdef STATICLIB_WINDOWS
 #include <windows.h>
 #include <psapi.h>
-#elif defined(__linux__) || defined (__ANDROID_API__)
+#elif defined(STATICLIB_ANDROID) || defined (STATICLIB_LINUX) || defined (STATICLIB_MAC) 
 #include <sys/types.h>
 #include <unistd.h>
 #endif
@@ -52,17 +53,16 @@ support::buffer stdin_readline(sl::io::span<const char>) {
 
 support::buffer service_get_pid(sl::io::span<const char>) {
     int64_t pid; // beacause getpid is int32_t, but GetCurrentProcessId returns DWORD which uint32_t
-#ifdef _WIN32
+#ifdef STATICLIB_WINDOWS
     pid = GetCurrentProcessId();
-#elif defined(__linux__) || defined (__ANDROID_API__)
+#elif defined(STATICLIB_ANDROID) || defined (STATICLIB_LINUX) || defined (STATICLIB_MAC) 
     pid = ::getpid();
-#elif TARGET_OS_X
 #endif
     return support::make_string_buffer(sl::support::to_string(pid));
 }
 
 support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) {
-#ifdef _WIN32
+#ifdef STATICLIB_WINDOWS
     PROCESS_MEMORY_COUNTERS pmc;
     // THere may be different PSAPI_VERSION, but it always use GetProcessMemoryInfo function name
     GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
@@ -70,8 +70,7 @@ support::buffer service_get_process_memory_size_bytes(sl::io::span<const char>) 
     // PagefileUsage - The Commit Charge value in bytes for this process. 
     //                 Commit Charge is the total amount of memory that the memory manager has committed for a running process.
     return support::make_string_buffer(sl::support::to_string(pmc.PagefileUsage));
-#elif defined(__linux__) || defined (__ANDROID_API__)
-#elif TARGET_OS_X
+#elif defined(STATICLIB_ANDROID) || defined (STATICLIB_LINUX) || defined (STATICLIB_MAC) 
 #endif
     return support::make_null_buffer();
 }
